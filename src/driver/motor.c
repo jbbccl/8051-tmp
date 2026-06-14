@@ -12,6 +12,6 @@ void motor_run(unsigned char duty) {
     unsigned char i;
     for (i = 0; i < 100; i++) {
         MOTOR_PIN = (i < duty);
-        delay_us(10);
+        delay_10us(1);
     }
 }

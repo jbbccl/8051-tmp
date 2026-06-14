@@ -5,5 +5,6 @@
 
 void delay_ms(uint16_t ms);
 void delay_10us(uint16_t us);
+void super_delay_10us(uint16_t n);
 
 #endif

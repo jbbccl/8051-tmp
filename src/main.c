@@ -13,8 +13,8 @@ void main(void) {
     seg7_init();
     unsigned long k = 0UL;
     while (1) {
-        unsigned char key = keypad_scan();
-        if(key != 0) key-= 0x30;
+        unsigned char key = idp_key_scan();
+        // if(key != 0) key-= 0x30;
         seg7_num(key);
         delay(200);
     }

@@ -23,3 +23,11 @@ unsigned short keypad_scan(void) {
     }
     return 0;
 }
+
+unsigned short idp_key_scan(void) {
+    if (!P3_0) return 2;  // K2
+    if (!P3_1) return 1;  // K1
+    if (!P3_2) return 3;  // K3
+    if (!P3_3) return 4;  // K4
+    return 0;
+}

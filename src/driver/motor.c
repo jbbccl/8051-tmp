@@ -1,6 +1,5 @@
 #include "config.h"
 #include "motor.h"
-#include "delay.h"
 
 #define MOTOR_PIN P1_0
 
@@ -11,7 +10,7 @@ void motor_off(void) { MOTOR_PIN = 0; }
 void motor_run(unsigned char duty) {
     unsigned char i;
     for (i = 0; i < 100; i++) {
-        MOTOR_PIN = (i < duty);
-        delay_10us(1);
+        MOTOR_PIN = (i <= duty);
+        int delay = 28;while (delay--);
     }
 }

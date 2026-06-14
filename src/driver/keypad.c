@@ -13,21 +13,21 @@ static __code unsigned short key_map[4][4] = {
 unsigned short keypad_scan(void) {
     unsigned short row, col, tmp;
     for (row = 0; row < 4; row++) {
-        P1 = ~(0x80 >> row);          // 当前行拉低，其余全高（列自动上拉）
-        tmp = P1 & 0x0F;              // 读列
-        if (tmp != 0x0F) {            // 某列为低
-            for (col = 0; col < 4 ; col++)
+        P1 = ~(0x80 >> row) & ~1;
+        tmp = P1 & 0x0F;
+        if (tmp != 0x0F) {
+            for (col = 0; col < 3 ; col++)
                 if (!(tmp & (8 >> col)))
                     return key_map[row][col];
         }
     }
-    return 0;
+    return 233;
 }
 
 unsigned short idp_key_scan(void) {
-    if (!P3_0) return 2;  // K2
-    if (!P3_1) return 1;  // K1
-    if (!P3_2) return 3;  // K3
-    if (!P3_3) return 4;  // K4
-    return 0;
+    if (!P3_0) return 2;
+    if (!P3_1) return 1;
+    if (!P3_2) return 3;
+    if (!P3_3) return 4;
+    return 233;
 }

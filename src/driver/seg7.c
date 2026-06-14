@@ -30,10 +30,10 @@ void seg7_init(void) {
 
 void seg7_num(unsigned long num) {
     unsigned char i;
-    EA = 0;
+    // EA = 0;
     for (i = 0; i < 8; i++) {
         disp_buf[i] = num % 10;
         num /= 10;
     }
-    EA = 1;
+    // EA = 1;
 }

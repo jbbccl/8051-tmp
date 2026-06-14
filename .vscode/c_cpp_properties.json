@@ -19,7 +19,10 @@
                 "__xdata=",
                 "__idata=",
                 "__pdata=",
-                "__interrupt(x)="
+                "__interrupt(x)=",
+                "__asm=",
+                "NOP=",
+                "__endasm="
             ],
             "compilerPath": "${SDCC_HOME}/bin/sdcc",
             "cStandard": "c99",

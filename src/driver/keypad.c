@@ -1,0 +1,25 @@
+#include <8051.h>
+#include "keypad.h"
+
+// P1_7~P1_4 行输出(低有效), P1_3~P1_0 列输入(上拉)
+
+static __code unsigned short key_map[4][4] = {
+    {'1', '2', '3', 'A'},
+    {'4', '5', '6', 'B'},
+    {'7', '8', '9', 'C'},
+    {'*', '0', '#', 'D'}
+};
+
+unsigned short keypad_scan(void) {
+    unsigned short row, col, tmp;
+    for (row = 0; row < 4; row++) {
+        P1 = ~(0x80 >> row);          // 当前行拉低，其余全高（列自动上拉）
+        tmp = P1 & 0x0F;              // 读列
+        if (tmp != 0x0F) {            // 某列为低
+            for (col = 0; col < 4 ; col++)
+                if (!(tmp & (8 >> col)))
+                    return key_map[row][col];
+        }
+    }
+    return 0;
+}

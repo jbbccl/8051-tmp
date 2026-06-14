@@ -1,6 +1,7 @@
 #include <8051.h>
 #include "seg7.h"
 #include "delay.h"
+#include "keypad.h"
 
 void timer0_isr(void) __interrupt(1) {
     TH0 = (65536 - 914) >> 8;
@@ -10,9 +11,11 @@ void timer0_isr(void) __interrupt(1) {
 
 void main(void) {
     seg7_init();
-    unsigned long k = 87654321UL;
+    unsigned long k = 0UL;
     while (1) {
-        seg7_num(k++);
-        delay(400);
+        unsigned char key = keypad_scan();
+        if(key != 0) key-= 0x30;
+        seg7_num(key);
+        delay(200);
     }
 }

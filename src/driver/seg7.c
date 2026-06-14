@@ -1,4 +1,4 @@
-#include <8051.h>
+#include "config.h"
 #include "seg7.h"
 
 #define DIG_SEL(d)  P2 = (P2 & 0xE3) | (((d) & 0x07) << 2)

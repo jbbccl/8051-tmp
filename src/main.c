@@ -1,4 +1,4 @@
-#include <8051.h>
+#include "config.h"
 #include "seg7.h"
 #include "delay.h"
 #include "keypad.h"

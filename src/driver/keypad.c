@@ -1,4 +1,4 @@
-#include <8051.h>
+#include "config.h"
 #include "keypad.h"
 
 // P1_7~P1_4 行输出(低有效), P1_3~P1_0 列输入(上拉)

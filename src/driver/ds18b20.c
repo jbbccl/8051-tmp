@@ -15,7 +15,8 @@ uint8_t check(void) {
     return t;
 }
 
-uint8_t init(void) {
+uint8_t ds18b20_init(void) {
+    ET0 = 0;
     DQ = 0;
     // 207: 13 - 0 剧烈跳变,经常为0 200: 11-13跳变 213 : 13-8
     // 100: 13,0 113:8,11 114:7,13 115:6,13 116:5,12 117:5,11 118:5,10 119:4,10 120:7-9-8-
@@ -23,11 +24,13 @@ uint8_t init(void) {
     // 125:先乱动,6 127:13,0,5 130: 3,6 140:6一次13,11
     delay = 124; while (delay--);
     DQ = 1;
+    ET0 = 1;
     return check();
 }
 
 uint8_t read() {
 	uint8_t byte = 0, bit, j;
+    ET0 = 0;
 	for (j = 0; j < 8; j++) {
 		DQ = 0;
 		delay++;
@@ -38,11 +41,13 @@ uint8_t read() {
 		byte = (byte >> 1) | (bit << 7);
 		delay = 2; while (delay--);
 	}
+    ET0 = 1;
 	return byte;
 }
 
 void write(uint8_t dat) {
 	uint8_t j;
+    ET0 = 0;
 	for(j = 0; j < 8; j++) {
 		DQ = 0;
 		delay++;
@@ -52,15 +57,16 @@ void write(uint8_t dat) {
 		DQ = 1;
 		dat >>= 1;
 	}
+    ET0 = 1;
 }
 
 uint16_t ReadTemp(void) {
     uint16_t temper = 0;
-    init();
+    ds18b20_init();
     write(0xcc);
     write(0x44);
     delay_ms(750);
-    init();
+    ds18b20_init();
     write(0xcc);
     write(0xbe);
 

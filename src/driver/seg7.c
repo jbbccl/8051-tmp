@@ -37,3 +37,11 @@ void seg7_num(unsigned long num) {
     }
     // EA = 1;
 }
+
+void seg7_hex(uint32_t val) {
+    unsigned char i;
+    for (i = 0; i < 8; i++) {
+        disp_buf[i] = val & 0xF;
+        val >>= 4;
+    }
+}

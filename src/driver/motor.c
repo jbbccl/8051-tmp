@@ -10,7 +10,7 @@ void motor_off(void) { MOTOR_PIN = 0; }
 void motor_run(unsigned char duty) {
     unsigned char i;
     for (i = 0; i < 100; i++) {
-        MOTOR_PIN = (i <= duty);
-        int delay = 28;while (delay--);
+        MOTOR_PIN = (i < duty);
+        int delay = 66;while (delay--);
     }
 }

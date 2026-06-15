@@ -20,18 +20,16 @@ void int0_isr(void) __interrupt(0) {
 void main(void) {
     seg7_init();
     ir_init();
-    unsigned long k = 0UL;
-
-    // while (1){
-    //     seg7_num(k++);
-    //     delay_ms(200);
-    // }
+    uint32_t k = 0UL;
+    uint16_t temper = 0UL;
 
     while (1) {
-        k = ((uint32_t)ir_buff[0] << 24)
-          | ((uint32_t)ir_buff[1] << 16)
-          | ((uint32_t)ir_buff[2] << 8)
-          |  (uint32_t)ir_buff[3];
-        seg7_hex(k);
+        k = ir_read();
+        if (idp_key_scan() == 1)
+            motor_off();
+        else
+            motor_run( k * 5);
+        // temper = ds18b20_tempure();
+        seg7_num(k);
     }
 }

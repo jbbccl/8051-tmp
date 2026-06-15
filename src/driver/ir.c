@@ -34,3 +34,36 @@ uint16_t ir_isr_body(void){
     }
     return 3; // noise
 }
+
+uint8_t ir_map(uint8_t cmd) {
+    switch (cmd) {
+        case 0x07: return 16;
+        case 0x08: return 4;
+        case 0x09: return 18;
+        case 0x0C: return 1;
+        case 0x0D: return 20;
+        case 0x15: return 17;
+        case 0x16: return 0;
+        case 0x18: return 2;
+        case 0x19: return 19;
+        case 0x1C: return 5;
+        case 0x40: return 14;
+        case 0x42: return 7;
+        case 0x43: return 15;
+        case 0x44: return 13;
+        case 0x45: return 10;
+        case 0x46: return 11;
+        case 0x47: return 12;
+        case 0x4A: return 9;
+        case 0x52: return 8;
+        case 0x5A: return 6;
+        case 0x5E: return 3;
+        default:   return cmd;
+    }
+}
+
+uint8_t ir_read(){
+    if(ir_buff[0] != (uint8_t)~ir_buff[1] || ir_buff[2] != (uint8_t)~ir_buff[3])
+        return 0xFF;
+    return ir_map(ir_buff[2]);
+}

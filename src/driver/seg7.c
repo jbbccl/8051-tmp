@@ -13,10 +13,10 @@ static unsigned char disp_buf[8];
 static volatile unsigned char disp_pos;
 
 void seg7_scan(void) {
-    P0 = 0x00;
+    // P0 = 0x00;
     DIG_SEL(disp_pos);
-    P0 = seg_table[disp_buf[disp_pos]];
-    disp_pos = (disp_pos + 1) & 0x07;
+    P0 = seg_table[disp_buf[disp_pos++]];
+    disp_pos &= 0x07;
 }
 
 void seg7_init(void) {

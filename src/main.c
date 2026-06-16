@@ -5,6 +5,7 @@
 #include "motor.h"
 #include "ds18b20.h"
 #include "ir.h"
+#include "hc_sr04.h"
 
 void timer0_isr(void) __interrupt(1) {
     TH0 = (65536 - 914) >> 8;
@@ -24,12 +25,8 @@ void main(void) {
     uint16_t temper = 0UL;
 
     while (1) {
-        k = ir_read();
-        if (idp_key_scan() == 1)
-            motor_off();
-        else
-            motor_run( k * 5);
-        // temper = ds18b20_tempure();
+        k = hc_sr04_avg_cm(10);
         seg7_num(k);
+        delay_ms(200);
     }
 }

@@ -1,0 +1,14 @@
+{
+    "clangd.fallbackFlags": [
+        "-I/home/e/Desktop/91/inc",
+        "-I/nix/store/2jini1drmra6zwc46prmganxby60x9dp-sdcc-4.5.0/share/sdcc/include",
+        "-I/nix/store/2jini1drmra6zwc46prmganxby60x9dp-sdcc-4.5.0/share/sdcc/include/mcs51",
+        "-include",
+        "/home/e/Desktop/91/inc/sdcc_compat.h",
+        "-D__SDCC__",
+        "-D__SDCC_mcs51",
+        "-std=c99",
+        "-x",
+        "c"
+    ]
+}

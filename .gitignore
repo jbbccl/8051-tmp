@@ -1,3 +1,6 @@
 build
 .venv
 doc
+.pio
+.cache
+compile_commands.json

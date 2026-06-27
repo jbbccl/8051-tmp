@@ -1,4 +1,7 @@
 {
+    "clangd.arguments": [
+        "--query-driver=/home/e/.platformio/packages/toolchain-xtensa-esp32/bin/xtensa-esp32-elf-*"
+    ],
     "clangd.fallbackFlags": [
         "-I${workspaceFolder}/inc",
         "-I${env:SDCC_INCLUDE}",

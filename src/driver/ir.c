@@ -1,5 +1,4 @@
 #include "config.h"
-#include "delay.h"
 #include "ir.h"
 
 volatile uint8_t ir_buff[4];

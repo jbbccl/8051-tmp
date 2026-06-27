@@ -1,6 +1,7 @@
 #include "config.h"
 #include "nrf.h"
 
+// ── base ────────────────────────────────────
 uint8_t nrf_spi(uint8_t dat) {
     uint8_t i, val = 0;
     for (i = 0; i < 8; i++) {
@@ -17,20 +18,38 @@ uint8_t nrf_spi(uint8_t dat) {
 uint8_t nrf_read(uint8_t reg) {
     uint8_t v;
     NRF_CSN = 0;
-    nrf_spi(reg);           /* 第1字节: STATUS, 忽略 */
-    v = nrf_spi(0xFF);      /* 第2字节: 寄存器值 */
+    nrf_spi(reg);
+    v = nrf_spi(0xFF);
     NRF_CSN = 1;
     return v;
 }
 
 void nrf_write(uint8_t reg, uint8_t val) {
     NRF_CSN = 0;
-    nrf_spi(0x20 | reg);   /* W_REGISTER */
+    nrf_spi(0x20 | reg);
     nrf_spi(val);
     NRF_CSN = 1;
 }
 
-void nrf_tx_init(uint8_t *addr) {
+static void nrf_set_addr(uint8_t reg, uint8_t *addr) {
+    uint8_t i;
+    NRF_CSN = 0;
+    nrf_spi(0x20 | reg);
+    for (i = 0; i < 5; i++) nrf_spi(addr[i]);
+    NRF_CSN = 1;
+}
+
+void nrf_set_ch(uint8_t ch) {
+    nrf_write(0x05, ch);
+}
+
+void nrf_set_rate(uint8_t rate) {
+    nrf_write(0x06, rate);
+}
+
+
+// ── send ────────────────────────────────────
+void nrf_tx_init(uint8_t *addr, uint8_t ch, uint8_t rate) {
     NRF_CE = 0;
     nrf_write(0x00, 0x08);
     nrf_write(0x00, 0x0E);
@@ -38,24 +57,16 @@ void nrf_tx_init(uint8_t *addr) {
     nrf_write(0x02, 0x01);
     nrf_write(0x03, 0x03);
     nrf_write(0x04, 0x00);
-    nrf_write(0x05, 0x02);
-    nrf_write(0x06, 0x06);
-    nrf_set_tx_addr(addr);
+    nrf_set_ch(ch);
+    nrf_set_rate(rate);
+    nrf_set_addr(0x10, addr);
     nrf_write(0x11, 4);
-}
-
-void nrf_set_tx_addr(uint8_t *addr) {
-    uint8_t i;
-    NRF_CSN = 0;
-    nrf_spi(0x20 | 0x10);
-    for (i = 0; i < 5; i++) nrf_spi(addr[i]);
-    NRF_CSN = 1;
 }
 
 void nrf_send(uint8_t *data, uint8_t len) {
     uint8_t i;
     NRF_CSN = 0;
-    nrf_spi(0xA0);              /* W_TX_PAYLOAD */
+    nrf_spi(0xA0);
     for (i = 0; i < len; i++) nrf_spi(data[i]);
     NRF_CSN = 1;
 
@@ -64,22 +75,18 @@ void nrf_send(uint8_t *data, uint8_t len) {
     NRF_CE = 0;
 }
 
-void nrf_rx_init(uint8_t *addr) {
-    uint8_t i;
+// ── recv ────────────────────────────────────
+void nrf_rx_init(uint8_t *addr, uint8_t ch, uint8_t rate) {
     NRF_CE = 0;
     nrf_write(0x00, 0x08);
-    nrf_write(0x00, 0x0F);   /* PWR_UP=1, PRIM_RX=1 */
+    nrf_write(0x00, 0x0F);
     nrf_write(0x02, 0x01);
     nrf_write(0x03, 0x03);
-    nrf_write(0x05, 0x02);
-    nrf_write(0x06, 0x06);
-    /* RX 地址 pipe0 */
-    NRF_CSN = 0;
-    nrf_spi(0x20 | 0x0A);
-    for (i = 0; i < 5; i++) nrf_spi(addr[i]);
-    NRF_CSN = 1;
-    nrf_write(0x11, 4);      /* payload 4 字节 */
-    NRF_CE = 1;              /* 开始监听 */
+    nrf_set_ch(ch);
+    nrf_set_rate(rate);
+    nrf_set_addr(0x0A, addr);
+    nrf_write(0x11, 4);
+    NRF_CE = 1;
 }
 
 uint8_t nrf_available(void) {
@@ -100,10 +107,7 @@ void nrf_recv(uint8_t *buf, uint8_t len) {
     NRF_CSN = 1;
 }
 
-void nrf_set_ch(uint8_t ch) {
-    nrf_write(0x05, ch);
-}
-
+// ── misc ────────────────────────────────────
 uint8_t nrf_rpd(void) {
     NRF_CE = 1;
     delay_ms(1);

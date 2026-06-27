@@ -25,7 +25,7 @@ uint8_t ds18b20_init(void) {
 }
 
 uint8_t read() {
-	uint8_t byte = 0, bit, j;
+	uint8_t byte = 0, bi, j;
     ET0 = 0;
 	for (j = 0; j < 8; j++) {
 		DQ = 0;
@@ -33,8 +33,8 @@ uint8_t read() {
 		DQ = 1;
 		delay++;
 		delay++;
-		bit = DQ;
-		byte = (byte >> 1) | (bit << 7);
+		bi = DQ;
+		byte = (byte >> 1) | (bi << 7);
 		delay = 2; while (delay--);
 	}
     ET0 = 1;

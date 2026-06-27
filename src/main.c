@@ -1,6 +1,5 @@
 #include "config.h"
 #include "seg7.h"
-#include "delay.h"
 #include "nrf.h"
 
 void timer0_isr(void) __interrupt(1) {
@@ -10,18 +9,12 @@ void timer0_isr(void) __interrupt(1) {
 }
 
 int main(void) {
-    uint8_t addr[] = {0xE7, 0xE7, 0xE7, 0xE7, 0xE7};
-    uint8_t buf[4];
+    uint8_t my_addr[] = {0xE7, 0xE7, 0xE7, 0xE7, 0xE7};
+    uint8_t data[] = {0xAA, 0xBB, 0xCC, 0xDD};
     seg7_init();
-    nrf_rx_init(addr);
-
-    while (1) {
-        if (nrf_available()) {
-            nrf_recv(buf, 4);
-            seg7_hex(((uint32_t)buf[0] << 24)
-                   | ((uint32_t)buf[1] << 16)
-                   | ((uint32_t)buf[2] << 8)
-                   |  (uint32_t)buf[3]);
-        }
-    }
+    nrf_tx_init(my_addr, 2, 6);
+    nrf_send(data, 4);
+    delay_ms(10);
+    seg7_hex(nrf_read(0x07));   /* 预期 0x2E */
+    while (1);
 }

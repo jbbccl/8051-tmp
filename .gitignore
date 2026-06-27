@@ -1,7 +1,11 @@
 build
 .venv
 doc
+
 .pio
 .cache
 compile_commands.json
 arduino-esp32-master
+
+node_modules
+dist

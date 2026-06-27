@@ -44,4 +44,21 @@ d=json.load(open(f));\
 [e.update({'command':' '.join(p[:1]+['-w']+p[1:])})for e in d if (p:=[x for x in e['command'].split()if x not in bad])];\
 json.dump(d,open(f,'w'),indent=2)"
 
-.PHONY: clean flash esp esp-upload esp-monitor esp-clean esp-db
+.PHONY: clean flash esp esp-upload esp-monitor esp-clean esp-db web web-build web-pack web-dev web-install web-all
+
+# ── Web UI (Vite) ──────────────────────
+web-install:
+	cd esp32/web && pnpm install
+
+web-dev:
+	cd esp32/web && pnpm dev
+
+web-build:
+	cd esp32/web && pnpm build
+
+web-pack:
+	python3 esp32/web/convert.py
+
+web: web-build web-pack
+
+web-all: web-install web

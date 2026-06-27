@@ -4,3 +4,4 @@ doc
 .pio
 .cache
 compile_commands.json
+arduino-esp32-master

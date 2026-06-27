@@ -38,10 +38,6 @@ static esp_err_t index_handler(httpd_req_t *req) {
         log_e("Camera sensor not found");
         return httpd_resp_send_500(req);
     }
-    if (s->id.PID == OV3660_PID)
-        return httpd_resp_send(req, (const char *)index_ov3660_html_gz, index_ov3660_html_gz_len);
-    if (s->id.PID == OV5640_PID)
-        return httpd_resp_send(req, (const char *)index_ov5640_html_gz, index_ov5640_html_gz_len);
     return httpd_resp_send(req, (const char *)index_ov2640_html_gz, index_ov2640_html_gz_len);
 }
 

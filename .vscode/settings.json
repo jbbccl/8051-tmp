@@ -1,10 +1,10 @@
 {
     "clangd.fallbackFlags": [
-        "-I/home/e/Desktop/91/inc",
-        "-I/nix/store/*-sdcc-4.5.0/share/sdcc/include",
-        "-I/nix/store/*-sdcc-4.5.0/share/sdcc/include/mcs51",
+        "-I${workspaceFolder}/inc",
+        "-I${env:SDCC_INCLUDE}",
+        "-I${env:SDCC_INCLUDE}/mcs51",
         "-include",
-        "/home/e/Desktop/91/inc/sdcc_compat.h",
+        "${workspaceFolder}/inc/sdcc_compat.h",
         "-D__SDCC__",
         "-D__SDCC_mcs51",
         "-std=c99",

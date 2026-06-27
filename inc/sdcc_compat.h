@@ -36,7 +36,7 @@
 /* SDCC inline asm */
 #define __asm
 #define __endasm
-#define __asm__
+#define __asm__(x) 
 
 /* SDCC bit type */
 #define __bit unsigned char

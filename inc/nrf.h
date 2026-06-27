@@ -15,5 +15,10 @@ void nrf_write(uint8_t reg, uint8_t val);
 void nrf_tx_init(uint8_t *addr);
 void nrf_set_tx_addr(uint8_t *addr);
 void nrf_send(uint8_t *data, uint8_t len);
+void nrf_rx_init(uint8_t *addr);
+uint8_t nrf_available(void);
+void nrf_recv(uint8_t *buf, uint8_t len);
+void nrf_set_ch(uint8_t ch);
+uint8_t nrf_rpd(void);
 
 #endif

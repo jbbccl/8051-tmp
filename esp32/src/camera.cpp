@@ -2,10 +2,18 @@
 #include "esp_camera.h"
 #include "camera.h"
 #include "board_config.h"
-
-void setupLedFlash();
+#include "led_flash.h"
 
 void camera_init(void) {
+    // 硬件复位：给传感器干净启动时序
+#if PWDN_GPIO_NUM >= 0
+    pinMode(PWDN_GPIO_NUM, OUTPUT);
+    digitalWrite(PWDN_GPIO_NUM, LOW);
+    delay(100);
+    digitalWrite(PWDN_GPIO_NUM, HIGH);
+    delay(100);
+#endif
+
     camera_config_t config;
     config.ledc_channel = LEDC_CHANNEL_0;
     config.ledc_timer   = LEDC_TIMER_0;
@@ -51,9 +59,15 @@ void camera_init(void) {
 #endif
 
     Serial.println("camera init...");
-    esp_err_t err = esp_camera_init(&config);
+    esp_err_t err;
+    for (int retry = 0; retry < 3; retry++) {
+        err = esp_camera_init(&config);
+        if (err == ESP_OK) break;
+        Serial.printf("Camera init retry %d: 0x%x\n", retry, err);
+        delay(200);
+    }
     if (err != ESP_OK) {
-        Serial.printf("Camera init failed: 0x%x\n", err);
+        Serial.printf("Camera init failed after retries: 0x%x\n", err);
         return;
     }
 

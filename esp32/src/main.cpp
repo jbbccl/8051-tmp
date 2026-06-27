@@ -2,8 +2,7 @@
 #include <WiFi.h>
 #include "camera.h"
 #include "wifi_ap.h"
-
-void startCameraServer();
+#include "app_httpd.h"
 
 void setup() {
     Serial.begin(115200);

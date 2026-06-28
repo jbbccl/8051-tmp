@@ -9,3 +9,4 @@ arduino-esp32-master
 
 node_modules
 dist
+__pycache__

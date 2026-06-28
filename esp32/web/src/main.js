@@ -100,7 +100,31 @@ document.getElementById('get-still').onclick = () => {
   $placeholder.classList.add('hidden');
 };
 
+// ── save still ──
+document.getElementById('save-still').onclick = () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = $stream.width;
+  canvas.height = $stream.height;
+  canvas.getContext('2d').drawImage($stream, 0, 0);
+  const a = document.getElementById('save-still');
+  a.href = canvas.toDataURL('image/jpeg');
+  a.download = new Date().toISOString().slice(0,19).replace(/[T:]/g,'-') + '.jpg';
+};
+
 // ── theme toggle ──
 document.getElementById('theme-btn').onclick = () => {
   document.documentElement.classList.toggle('light');
 };
+
+// Routes (future):
+//   GET  /sensors  → { temp, light, dist }
+//   POST /motor    → { cmd: "on"|"off"|"run", val: 0..100 }
+//   POST /nrf      → raw payload to 51
+//
+// document.getElementById('refresh-sensors').onclick = () => {
+//   fetch('/sensors').then(r=>r.json()).then(d => {
+//     v('v-temp', d.temp + '°C');
+//     v('v-light', d.light);
+//     v('v-dist',  d.dist + 'cm');
+//   });
+// };

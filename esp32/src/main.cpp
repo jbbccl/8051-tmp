@@ -3,6 +3,7 @@
 #include "camera.h"
 #include "wifi_ap.h"
 #include "app_httpd.h"
+#include "nrf_bridge.h"
 
 void setup() {
     Serial.begin(115200);
@@ -10,6 +11,7 @@ void setup() {
     Serial.println();
 
     camera_init();
+    nrf_init();  // ponytail: after camera → ledc detach CE safe
     wifi_init();
 
     startCameraServer();
@@ -20,5 +22,6 @@ void setup() {
 }
 
 void loop() {
-    delay(10000);
+    nrf_poll();
+    delay(10);
 }

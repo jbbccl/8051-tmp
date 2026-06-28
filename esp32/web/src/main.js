@@ -10,7 +10,8 @@ const fill = el => {
 document.querySelectorAll('input[type=range]').forEach(el => {
   fill(el);
   el.oninput = () => {
-    fetch(`${BASE}/control?var=${el.id}&val=${el.value}`);
+    const mcu = el.id === 'fan' || el.id === 'pump';
+    fetch(mcu ? `${BASE}/51mcu?cmd=${el.id}&val=${el.value}` : `${BASE}/control?var=${el.id}&val=${el.value}`);
     const s = document.getElementById(el.id + '-val');
     if (s) s.textContent = el.value;
     fill(el);
@@ -116,15 +117,22 @@ document.getElementById('theme-btn').onclick = () => {
   document.documentElement.classList.toggle('light');
 };
 
-// Routes (future):
-//   GET  /sensors  → { temp, light, dist }
-//   POST /motor    → { cmd: "on"|"off"|"run", val: 0..100 }
-//   POST /nrf      → raw payload to 51
-//
-// document.getElementById('refresh-sensors').onclick = () => {
-//   fetch('/sensors').then(r=>r.json()).then(d => {
-//     v('v-temp', d.temp + '°C');
-//     v('v-light', d.light);
-//     v('v-dist',  d.dist + 'cm');
-//   });
-// };
+// ── sensors ──
+const updateSensors = () => fetch('/51mcu?cmd=sensors').then(r=>r.json()).then(d => {
+  ['temp','light','dist','ir'].forEach(k => {
+    const el = document.getElementById('v-' + k);
+    if (!el) return;
+    const u = {temp:'°C', dist:'cm', light:'', ir:''}[k];
+    el.textContent = d[k] != null ? d[k] + u : '--';
+  });
+}).catch(()=>{});
+document.getElementById('refresh-sensors').onclick = updateSensors;
+updateSensors();
+setInterval(updateSensors, 5000);
+
+// ── misc toggle (no-op) ──
+document.getElementById('misc-toggle').onclick = function () {
+  const on = this.textContent.includes('OFF');
+  this.textContent = '?? ' + (on ? 'ON' : 'OFF');
+  this.className = on ? 'toggle-btn toggle-on text-sm px-3 py-1' : 'toggle-btn toggle-off text-sm px-3 py-1';
+};

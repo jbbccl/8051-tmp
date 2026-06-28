@@ -21,6 +21,7 @@
 #include "app_httpd.h"
 #include "camera_stream.h"
 #include "camera_ctrl.h"
+#include "ctrl_gpio.h"
 
 #if defined(ARDUINO_ARCH_ESP32) && defined(CONFIG_ARDUHAL_ESP_LOG)
 #include "esp32-hal-log.h"
@@ -56,6 +57,7 @@ void startCameraServer() {
     httpd_uri_t greg_uri    = make_greg_uri();
     httpd_uri_t pll_uri     = make_pll_uri();
     httpd_uri_t win_uri     = make_win_uri();
+    httpd_uri_t mcu_uri     = make_51mcu_uri();
 
     camera_ra_filter_init(20);
 
@@ -71,6 +73,7 @@ void startCameraServer() {
         httpd_register_uri_handler(camera_httpd, &greg_uri);
         httpd_register_uri_handler(camera_httpd, &pll_uri);
         httpd_register_uri_handler(camera_httpd, &win_uri);
+        httpd_register_uri_handler(camera_httpd, &mcu_uri);
     }
 
     cfg.server_port += 1;

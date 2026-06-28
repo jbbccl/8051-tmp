@@ -119,11 +119,11 @@ document.getElementById('theme-btn').onclick = () => {
 
 // ── sensors ──
 const updateSensors = () => fetch('/51mcu?cmd=sensors').then(r=>r.json()).then(d => {
-  ['temp','light','dist','ir'].forEach(k => {
+  ['temp','light','dist','ir','nrf'].forEach(k => {
     const el = document.getElementById('v-' + k);
     if (!el) return;
-    const u = {temp:'°C', dist:'cm', light:'', ir:''}[k];
-    el.textContent = d[k] != null ? d[k] + u : '--';
+    const u = {temp:'°C', dist:'cm', light:'', ir:'', nrf:''}[k];
+    el.textContent = k==='nrf' ? (d[k] ? 'NRF✓' : 'NRF✗') : (d[k] != null ? d[k] + u : '--');
   });
 }).catch(()=>{});
 document.getElementById('refresh-sensors').onclick = updateSensors;

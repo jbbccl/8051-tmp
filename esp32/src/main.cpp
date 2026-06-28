@@ -12,6 +12,7 @@ void setup() {
 
     camera_init();
     nrf_init();  // ponytail: after camera → ledc detach CE safe
+    Serial.println(nrf_online() ? "NRF OK" : "NRF FAIL");
     wifi_init();
 
     startCameraServer();

@@ -10,10 +10,17 @@ const fill = el => {
 document.querySelectorAll('input[type=range]').forEach(el => {
   fill(el);
   el.oninput = () => {
+    if (el.id === 'reflash-rate') {  // ponytail: JS-only, no request
+      document.getElementById('reflash-val').textContent = el.value + 'ms';
+      fill(el);
+      restartPoll();
+      return;
+    }
     const mcu = el.id === 'fan' || el.id === 'pump';
-    fetch(mcu ? `${BASE}/51mcu?cmd=${el.id}&val=${el.value}` : `${BASE}/control?var=${el.id}&val=${el.value}`);
+    const sufs = {fan:'°C', pump:'%'};
+    fetch(mcu ? `${BASE}/51mcu?cmd=${el.id}_limit&val=${el.value}` : `${BASE}/control?var=${el.id}&val=${el.value}`);
     const s = document.getElementById(el.id + '-val');
-    if (s) s.textContent = el.value;
+    if (s) s.textContent = el.value + (sufs[el.id] || '');
     fill(el);
   };
 });
@@ -123,12 +130,12 @@ const updateSensors = () => fetch('/51mcu?cmd=sensors').then(r=>r.json()).then(d
     const el = document.getElementById('v-' + k);
     if (!el) return;
     const u = {temp:'°C', dist:'cm', light:'', ir:'', nrf:''}[k];
-    el.textContent = k==='nrf' ? (d[k] ? '   NRF✓' : '   NRF✗') : (d[k] != null ? d[k] + u : '--');
+    el.textContent = k==='nrf' ? (d[k] ? 'NRF✓' : 'NRF✗') : k==='temp' ? (d[k]/100).toFixed(1)+u : d[k]!=null ? d[k]+u : '--';
   });
 }).catch(()=>{});
 document.getElementById('refresh-sensors').onclick = updateSensors;
-updateSensors();
-setInterval(updateSensors, 5000);
+let sensorTimer; const restartPoll = () => { clearInterval(sensorTimer); sensorTimer = setInterval(updateSensors, +document.getElementById('reflash-rate').value); };
+updateSensors(); restartPoll();
 
 // ── fold cards ──
 document.querySelectorAll('.fold-btn').forEach(btn => {
@@ -140,8 +147,12 @@ document.querySelectorAll('.fold-btn').forEach(btn => {
     btn.classList.toggle('toggle-off', cards[i].classList.contains('hidden'));
   };
 });
-document.getElementById('misc-toggle').onclick = function () {
-  const on = this.textContent.includes('OFF');
-  this.textContent = '?? ' + (on ? 'ON' : 'OFF');
-  this.className = on ? 'toggle-btn toggle-on text-sm px-3 py-1' : 'toggle-btn toggle-off text-sm px-3 py-1';
-};
+// ── fan/pump toggles ──
+['fan','pump'].forEach(cmd => {
+  document.getElementById(cmd + '-onoff').onclick = function () {
+    const on = this.textContent.includes('OFF');
+    fetch(`${BASE}/51mcu?cmd=${cmd}_enable&val=${on ? 1 : 0}`);
+    this.textContent = (cmd === 'fan' ? '风机' : '水泵') + (on ? ' ON' : ' OFF');
+    this.className = on ? 'toggle-btn toggle-on text-sm px-3 py-1' : 'toggle-btn toggle-off text-sm px-3 py-1';
+  };
+});

@@ -66,7 +66,11 @@
       <!-- sensor preview -->
       <div>
         <div class="flex justify-end mb-2 items-center">
-          <button id="refresh-sensors" class="mt-1 text-sm px-3 py-1">刷新</button> <span id="v-nrf" class="text-xs" style="margin-left:2rem"></span>
+          <button id="refresh-sensors" class="mt-1 text-sm px-3 py-1">刷新</button> <span id="v-nrf" class="text-xs" style="margin-left:2rem"></span> 
+          <div class="space-y-1">
+            <label class="text-sm text-neutral-400">刷新速率 <span id="reflash-val" class="text-accent">2000ms</span></label>
+            <input type="range" id="reflash-rate" min="100" max="5000" value="2000" class="w-full">
+          </div>
         </div>
         <div class="grid grid-cols-2 gap-2 text-sm mt-2">
           <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">温度</span><span id="v-temp" class="text-neutral-200">--°C</span></div>
@@ -92,16 +96,18 @@
     <!-- placeholder card -->
     <div class="bg-neutral-900 p-4">
       <div class="space-y-1">
-        <label class="text-sm text-neutral-400">风机 <span id="fan-val" class="text-accent">0</span></label>
-        <input type="range" id="fan" min="0" max="100" value="0" class="w-full">
+        <label class="text-sm text-neutral-400">风机阈值 <span id="fan-val" class="text-accent">30°C</span></label>
+        <input type="range" id="fan" min="20" max="40" value="30" class="w-full">
       </div>
       <div class="space-y-1 mt-3">
-        <label class="text-sm text-neutral-400">水泵 <span id="pump-val" class="text-accent">0</span></label>
+        <label class="text-sm text-neutral-400">水泵阈值 <span id="pump-val" class="text-accent">0</span></label>
         <input type="range" id="pump" min="0" max="100" value="0" class="w-full">
       </div>
-      <div class="flex justify-end mt-3">
-        <button id="misc-toggle" class="toggle-btn toggle-off text-sm px-3 py-1">?? OFF</button>
+      <div class="flex justify-end mt-3 gap-2">
+        <button id="fan-onoff" class="toggle-btn toggle-off text-sm px-3 py-1">风机 OFF</button>
+        <button id="pump-onoff" class="toggle-btn toggle-off text-sm px-3 py-1">水泵 OFF</button>
       </div>
+    </div>
     </div>
 
   </div>

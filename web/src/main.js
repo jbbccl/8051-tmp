@@ -123,7 +123,7 @@ const updateSensors = () => fetch('/51mcu?cmd=sensors').then(r=>r.json()).then(d
     const el = document.getElementById('v-' + k);
     if (!el) return;
     const u = {temp:'°C', dist:'cm', light:'', ir:'', nrf:''}[k];
-    el.textContent = k==='nrf' ? (d[k] ? 'NRF✓' : 'NRF✗') : (d[k] != null ? d[k] + u : '--');
+    el.textContent = k==='nrf' ? (d[k] ? '   NRF✓' : '   NRF✗') : (d[k] != null ? d[k] + u : '--');
   });
 }).catch(()=>{});
 document.getElementById('refresh-sensors').onclick = updateSensors;

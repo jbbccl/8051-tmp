@@ -2,7 +2,7 @@
 
 TARGET = main
 SRC_DIR = 8051/src
-BUILD_DIR = build
+BUILD_DIR = 8051/build
 CFLAGS = --model-small --opt-code-speed -I8051/inc
 SRCS = $(shell find $(SRC_DIR) -name '*.c')
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
@@ -48,16 +48,16 @@ json.dump(d,open(f,'w'),indent=2)"
 
 # ── Web UI (Vite) ──────────────────────
 web-install:
-	cd esp32/web && pnpm install
+	cd web && pnpm install
 
 web-dev:
-	cd esp32/web && pnpm dev
+	cd web && pnpm dev
 
 web-build:
-	cd esp32/web && pnpm build
+	cd web && pnpm build
 
 web-pack:
-	python3 esp32/web/convert.py
+	python3 web/convert.py
 
 web: web-build web-pack
 

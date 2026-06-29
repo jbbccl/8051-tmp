@@ -14,6 +14,7 @@ static const uint8_t addr[] = {0xE7,0xE7,0xE7,0xE7,0xE7};
 
 uint8_t sens_buf[8];
 uint8_t stat_buf[8];
+uint8_t local_stat[4];  // ponytail: ESP-side state, route writes here
 
 static uint32_t dbg_poll, dbg_avail, abd_txfail;
 
@@ -50,6 +51,17 @@ void nrf_tx(const uint8_t *data, uint8_t len) {
     if (!nrf.txStandBy()) { nrf.flush_tx(); }
     nrf.startListening();
     delayMicroseconds(130);  // ponytail: RX settle Tstby2a
+}
+
+void nrf_sync(void) {
+    for (int i = 0; i < 4; i++) {
+        if (local_stat[i] != stat_buf[i + 1]) {
+            uint8_t pkt[8] = {0};
+            pkt[0] = 0x04 + (uint8_t)i; pkt[1] = local_stat[i]; // 指令偏移
+            nrf_tx(pkt, 8);
+            stat_buf[i + 1] = local_stat[i];  // ponytail: update mirror
+        }
+    }
 }
 
 #include <stdio.h>

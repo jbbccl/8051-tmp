@@ -42,12 +42,10 @@ static esp_err_t mcu_handler(httpd_req_t *req) {
             int v = 0;
             httpd_query_key_value(buf, "val", val, sizeof(val));
             v = atoi(val);
-            uint8_t pkt[4] = {0};
-            if (!strcmp(cmd, "fan_enable"))       { pkt[0]=0x04; pkt[1]=v; }
-            else if (!strcmp(cmd, "pump_enable")) { pkt[0]=0x05; pkt[1]=v; }
-            else if (!strcmp(cmd, "fan_limit"))   { pkt[0]=0x06; pkt[1]=v; }
-            else                                  { pkt[0]=0x07; pkt[1]=v; }
-            nrf_tx(pkt, 4);
+            if (!strcmp(cmd, "fan_enable"))       local_stat[0] = v;
+            else if (!strcmp(cmd, "pump_enable")) local_stat[1] = v;
+            else if (!strcmp(cmd, "fan_limit"))   local_stat[2] = v;
+            else                                  local_stat[3] = v;
             return httpd_resp_send(req, "ok", -1);
         }
     }

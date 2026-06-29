@@ -13,7 +13,7 @@
 #define RATE 0x08    // 2Mbps -18dBm
 static uint8_t addr[] = {0xE7,0xE7,0xE7,0xE7,0xE7};
 
-static uint8_t motor_enable, pump_enable, motor_limit = 30, pump_limit = 50;
+static uint8_t motor_enable=0, pump_enable=0, motor_limit = 30, pump_limit = 50;
 
 void timer0_isr(void) __interrupt(1) {
     TH0 = (65536 - 914) >> 8;
@@ -25,12 +25,13 @@ int main(void) {
     uint8_t data[8], cmd[8];
     ir_init();
     seg7_init();
-    nrf_init_global(addr, CH, RATE);  // ponytail: one-time, no per-loop PWR_UP cycle
-    uint8_t sus = 0;
+    nrf_init_global(addr, CH, RATE);
+    uint8_t ir = 0;
     while (1) {
         uint16_t temp  = ds18b20_tempure();
         uint16_t light = adc_read(0xA4);
-        uint8_t  ir    = ir_read();
+        uint8_t  tmpir = ir_read();
+        if(tmpir != 0xFF) ir = tmpir;
 
         data[0] = 0x01;
         data[1] = temp & 0xFF;
@@ -57,7 +58,6 @@ int main(void) {
         while (rx_wait--) {
             if (nrf_available()) {
                 dbg = 1;
-                sus++;
                 nrf_recv(cmd, 8);
                 switch (cmd[0]) {
                     case 0x04: motor_enable = cmd[1]; break;
@@ -69,9 +69,11 @@ int main(void) {
             }
             delay_ms(1);
         }
-        seg7_num(dbg ? sus*10 : sus*1000 + cmd[0] );
 
-        if (motor_enable && temp > motor_limit * 100) motor_on();
-        else motor_off();
+        if (motor_enable && temp > motor_limit * 100) {
+            // motor_run(90);
+            seg7_num(110000+ir);
+        }
+        else seg7_num(220000+ir);
     }
 }

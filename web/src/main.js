@@ -132,6 +132,15 @@ const updateSensors = () => fetch('/51mcu?cmd=sensors').then(r=>r.json()).then(d
     const u = {temp:'°C', dist:'cm', light:'', ir:'', nrf:''}[k];
     el.textContent = k==='nrf' ? (d[k] ? 'NRF✓' : 'NRF✗') : k==='temp' ? (d[k]/100).toFixed(1)+u : d[k]!=null ? d[k]+u : '--';
   });
+  // ponytail: fan/pump real state from 51
+  ['motor','pump'].forEach(k => {
+    const el = document.getElementById('v-' + k);
+    if (el) el.textContent = d[k] ? 'ON' : 'OFF';
+  });
+  document.getElementById('v-motor-lim').textContent = (d.motor_lim || 0) + '°C';
+  document.getElementById('v-pump-lim').textContent = (d.pump_lim || 0) + '%';
+  document.getElementById('fan-onoff').textContent = '风机 ' + (d.motor ? 'ON' : 'OFF');
+  document.getElementById('pump-onoff').textContent = '水泵 ' + (d.pump ? 'ON' : 'OFF');
 }).catch(()=>{});
 document.getElementById('refresh-sensors').onclick = updateSensors;
 let sensorTimer; const restartPoll = () => { clearInterval(sensorTimer); sensorTimer = setInterval(updateSensors, +document.getElementById('reflash-rate').value); };

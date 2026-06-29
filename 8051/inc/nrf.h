@@ -22,4 +22,9 @@ void nrf_set_ch(uint8_t ch);
 void nrf_set_rate(uint8_t rate);
 uint8_t nrf_rpd(void);
 
+// ponytail: hot-switch without PWR_UP cycling
+void nrf_init_global(uint8_t *addr, uint8_t ch, uint8_t rate);
+void nrf_set_tx_mode(void);
+void nrf_set_rx_mode(void);
+
 #endif

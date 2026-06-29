@@ -15,11 +15,12 @@ static const uint8_t addr[] = {0xE7,0xE7,0xE7,0xE7,0xE7};
 uint8_t sens_buf[8];
 uint8_t stat_buf[8];
 
-static uint32_t dbg_poll, dbg_avail;
+static uint32_t dbg_poll, dbg_avail, abd_txfail;
 
 void nrf_init(void) {
     SPI.begin(SCK, MISO, MOSI);
     nrf.begin();
+    nrf.setCRCLength(RF24_CRC_16);  // ponytail: 51 CONFIG=0x0F CRC0=1
     nrf.setChannel(2);
     nrf.setDataRate(RF24_2MBPS);
     nrf.setPALevel(RF24_PA_MIN);
@@ -45,12 +46,14 @@ bool nrf_online(void) { return nrf.isChipConnected(); }
 
 void nrf_tx(const uint8_t *data, uint8_t len) {
     nrf.stopListening();
-    nrf.writeFast(data, len);
+    if (!nrf.writeFast(data, len)) { nrf.flush_tx(); nrf.startListening(); return; }
+    if (!nrf.txStandBy()) { nrf.flush_tx(); }
     nrf.startListening();
+    delayMicroseconds(130);  // ponytail: RX settle Tstby2a
 }
 
 #include <stdio.h>
 void nrf_debug(char *json, size_t n) {
-    snprintf(json, n, R"({"poll":%lu,"avail":%lu,"online":%d})",
-             dbg_poll, dbg_avail, nrf_online());
+    snprintf(json, n, R"({"poll":%lu,"avail":%lu,"txfail":%lu,"online":%d})",
+             dbg_poll, dbg_avail, abd_txfail, nrf_online());
 }

@@ -60,7 +60,7 @@ void nrf_tx_init(uint8_t *addr, uint8_t ch, uint8_t rate) {
     nrf_set_ch(ch);
     nrf_set_rate(rate);
     nrf_set_addr(0x10, addr);
-    nrf_write(0x11, 4);
+    nrf_write(0x11, 8);  // ponytail: 8B payload
 }
 
 void nrf_send(uint8_t *data, uint8_t len) {
@@ -71,7 +71,7 @@ void nrf_send(uint8_t *data, uint8_t len) {
     NRF_CSN = 1;
 
     NRF_CE = 1;
-    delay_10us(1);
+    delay_10us(2);             // CE margin 15µs
     NRF_CE = 0;
 }
 
@@ -82,10 +82,12 @@ void nrf_rx_init(uint8_t *addr, uint8_t ch, uint8_t rate) {
     nrf_write(0x00, 0x0F);
     nrf_write(0x02, 0x01);
     nrf_write(0x03, 0x03);
+    nrf_write(0x07, 0x70);  // clear all IRQ before switching mode
     nrf_set_ch(ch);
     nrf_set_rate(rate);
     nrf_set_addr(0x0A, addr);
-    nrf_write(0x11, 4);
+    nrf_write(0x11, 8);  // ponytail: 8B payload
+    nrf_write(0x07, 0x70);
     NRF_CE = 1;
 }
 
@@ -113,4 +115,38 @@ uint8_t nrf_rpd(void) {
     delay_ms(1);
     NRF_CE = 0;
     return nrf_read(0x09) & 1;
+}
+
+// ponytail: hot-switch TX/RX, no PWR_UP cycling → no 1.6ms blind window
+void nrf_init_global(uint8_t *addr, uint8_t ch, uint8_t rate) {
+    NRF_CE = 0;
+    nrf_write(0x00, 0x08);    // PWR_UP=0, 首次复位
+    delay_ms(2);              // Tpd2stby=1.5ms + margin
+    nrf_write(0x00, 0x0F);    // PWR_UP=1, PRIM_RX=1, EN_CRC=1, CRC0=1
+    nrf_write(0x01, 0x00);    // EN_AA all off
+    nrf_write(0x02, 0x01);    // EN_RXADDR pipe 0
+    nrf_write(0x03, 0x03);    // SETUP_AW 5 bytes
+    nrf_write(0x04, 0x00);    // SETUP_RETR off
+    nrf_set_ch(ch);
+    nrf_set_rate(rate);
+    nrf_set_addr(0x0A, addr); // RX_ADDR_P0
+    nrf_set_addr(0x10, addr); // TX_ADDR
+    nrf_write(0x11, 8);       // RX_PW_P0 = 8 (shared with TX_PW_P0)
+    nrf_write(0x07, 0x70);    // clear all IRQ
+    NRF_CE = 1;               // start listening
+}
+
+void nrf_set_tx_mode(void) {
+    NRF_CE = 0;
+    nrf_write(0x00, 0x0E);    // PWR_UP=1, PRIM_RX=0
+    delay_10us(1);            // Tstby2a=130µs margin
+}
+
+void nrf_set_rx_mode(void) {
+    NRF_CE = 0;
+    nrf_write(0x07, 0x70);    // clear all IRQ
+    nrf_write(0x00, 0x0F);    // PWR_UP=1, PRIM_RX=1
+    NRF_CSN = 0; nrf_spi(0xE2); NRF_CSN = 1;  // ponytail: FLUSH_RX
+    delay_10us(1);
+    NRF_CE = 1;               // start listening
 }

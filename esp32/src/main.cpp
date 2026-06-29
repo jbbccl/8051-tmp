@@ -24,5 +24,8 @@ void setup() {
 
 void loop() {
     nrf_poll();
+    uint8_t test[] = {4,1,0,0,0,0,0,0};
+    static int tx_tick;
+    if (++tx_tick >= 10) { tx_tick = 0; nrf_tx(test, 8); }
     delay(10);
 }

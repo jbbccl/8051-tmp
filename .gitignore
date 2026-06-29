@@ -4,6 +4,7 @@ doc
 
 .pio
 .cache
+.platformio
 compile_commands.json
 arduino-esp32-master
 

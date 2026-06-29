@@ -72,10 +72,22 @@ int main(void) {
             delay_ms(1);
         }
 
+        uint32_t stat;
         if (motor_enable && temp > motor_limit * 100) {
-            // motor_run(90);
-            seg7_num(110000+ir);
+            stat = 1100; // 开继电器
         }
-        else seg7_num(220000+ir);
+        else stat = 7700;
+
+        if (pump_enable && temp > pump_limit * 100) {
+            stat+=1100000; // 开继电器
+        }
+        else stat+=7700000;
+        seg7_num(stat);
     }
+    /*
+    TODO
+    继电器
+    测距改引脚
+    lcd?
+    */
 }

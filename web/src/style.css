@@ -126,5 +126,4 @@ button:hover, a.button:hover { background: #6e738d; border-color: #ebcb8b; }
 .toggle-on:hover  { background: #b08de0; }
 .toggle-off:hover { background: #5b6078; }
 
-/* theme button */
-#theme-btn { border-radius: 0; }
+.fold-btn { width: 3.5rem; font-size: .875rem; line-height: normal; padding: .25rem .5rem; }

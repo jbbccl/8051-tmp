@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ESP32-CAM</title>
+  <title>sensor-gate</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body class="bg-neutral-950 text-neutral-200 min-h-screen flex flex-col">
   <div class="toggle-on toggle-off hidden"></div>
   <!-- top bar -->
-  <div class="w-full max-w-7xl mx-auto py-2 px-4 flex justify-between">
-    <span class="text-neutral-400 text-sm">传感器网关</span>
-    <button id="theme-btn" class="text-sm">☀</button>
+  <div class="w-full py-2 px-4 flex items-center gap-4 bg-neutral-900" style="position:sticky;top:0;z-index:10">
+    <span class="text-neutral-400 text-sm p-1">控制前端</span>
+    <button class="fold-btn toggle-btn toggle-on text-sm px-3 py-1" data-idx="0">相机</button>
+    <button class="fold-btn toggle-btn toggle-on text-sm px-3 py-1" data-idx="1">信息</button>
+    <button class="fold-btn toggle-btn toggle-on text-sm px-3 py-1" data-idx="2">控制</button>
+    <button id="theme-btn" class="text-sm px-3 py-1">☀</button>
   </div>
   <div class="flex-1 flex items-center justify-center p-4">
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl w-full">

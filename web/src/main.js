@@ -130,7 +130,16 @@ document.getElementById('refresh-sensors').onclick = updateSensors;
 updateSensors();
 setInterval(updateSensors, 5000);
 
-// ── misc toggle (no-op) ──
+// ── fold cards ──
+document.querySelectorAll('.fold-btn').forEach(btn => {
+  btn.onclick = () => {
+    const i = +btn.dataset.idx;
+    const cards = document.querySelectorAll('.grid > .bg-neutral-900');
+    cards[i].classList.toggle('hidden');
+    btn.classList.toggle('toggle-on', !cards[i].classList.contains('hidden'));
+    btn.classList.toggle('toggle-off', cards[i].classList.contains('hidden'));
+  };
+});
 document.getElementById('misc-toggle').onclick = function () {
   const on = this.textContent.includes('OFF');
   this.textContent = '?? ' + (on ? 'ON' : 'OFF');

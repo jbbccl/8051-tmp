@@ -21,6 +21,8 @@ void timer0_isr(void) __interrupt(1) {
     seg7_scan();
 }
 
+void int0_isr(void) __interrupt(0) { ir_isr_body(); }  // ponytail: IR INT0
+
 int main(void) {
     uint8_t data[8], cmd[8];
     ir_init();
@@ -64,7 +66,7 @@ int main(void) {
                     case 0x05: pump_enable  = cmd[1]; break;
                     case 0x06: motor_limit  = cmd[1]; break;
                     case 0x07: pump_limit   = cmd[1]; break;
-                }
+                }  
                 break;
             }
             delay_ms(1);

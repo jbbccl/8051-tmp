@@ -33,6 +33,12 @@ static esp_err_t mcu_handler(httpd_req_t *req) {
         httpd_req_get_url_query_str(req, buf, sizeof(buf));
 
     if (!httpd_query_key_value(buf, "cmd", cmd, sizeof(cmd))) {
+        if (!strcmp(cmd, "debug")) {
+            char json[128];
+            nrf_debug(json, sizeof(json));
+            httpd_resp_set_type(req, "application/json");
+            return httpd_resp_send(req, json, -1);
+        }
         if (!strcmp(cmd, "sensors")) {
             char json[128];
             parse_sensors(json, sizeof(json));

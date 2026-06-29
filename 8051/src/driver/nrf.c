@@ -71,7 +71,7 @@ void nrf_send(uint8_t *data, uint8_t len) {
     NRF_CSN = 1;
 
     NRF_CE = 1;
-    __asm__("nop"); __asm__("nop"); __asm__("nop");
+    delay_10us(1);
     NRF_CE = 0;
 }
 

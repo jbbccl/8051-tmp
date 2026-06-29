@@ -1,7 +1,7 @@
 // ponytail: 51→ESP sensors + ESP→51 motor ctl, NRF 2Mbps, 8B payload
 #include "config.h"
 #include "delay.h"
-#include "seg7.h"
+// #include "seg7.h"
 #include "nrf.h"
 #include "ds18b20.h"
 #include "adc.h"
@@ -19,7 +19,7 @@ static uint8_t addr[] = {0xE7,0xE7,0xE7,0xE7,0xE7};
 void timer0_isr(void) __interrupt(1) {
     TH0 = (65536 - 914) >> 8;
     TL0 = (65536 - 914) & 0xFF;
-    seg7_scan();
+    // seg7_scan();
 }
 
 int main(void) {

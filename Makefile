@@ -1,9 +1,9 @@
 # Makefile for 8051 with SDCC
 
 TARGET = main
-SRC_DIR = src
+SRC_DIR = 8051/src
 BUILD_DIR = build
-CFLAGS = --model-small --opt-code-speed -Iinc
+CFLAGS = --model-small --opt-code-speed -I8051/inc
 SRCS = $(shell find $(SRC_DIR) -name '*.c')
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 RELS = $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.rel)

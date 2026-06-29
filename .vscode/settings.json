@@ -3,11 +3,11 @@
         "--query-driver=/home/e/.platformio/packages/toolchain-xtensa-esp32/bin/xtensa-esp32-elf-*"
     ],
     "clangd.fallbackFlags": [
-        "-I${workspaceFolder}/inc",
+        "-I${workspaceFolder}/8051/inc",
         "-I${env:SDCC_INCLUDE}",
         "-I${env:SDCC_INCLUDE}/mcs51",
         "-include",
-        "${workspaceFolder}/inc/sdcc_compat.h",
+        "${workspaceFolder}/8051/inc/sdcc_compat.h",
         "-D__SDCC__",
         "-D__SDCC_mcs51",
         "-std=c99",

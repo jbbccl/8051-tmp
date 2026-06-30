@@ -130,7 +130,7 @@ const updateSensors = () => fetch('/51mcu?cmd=sensors').then(r=>r.json()).then(d
     const el = document.getElementById('v-' + k);
     if (!el) return;
     const u = {temp:'°C', dist:'cm', light:'%', ir:'', nrf:''}[k];
-    el.textContent = k==='nrf' ? (d[k] ? 'NRF✓' : 'NRF✗') : k==='temp' ? (d[k]/100).toFixed(1)+u : k==='light' ? Math.round(d[k]*17)+' lux' : d[k]!=null ? d[k]+u : '--';
+    el.textContent = k==='nrf' ? (d[k] ? 'NRF✓' : 'NRF✗') : k==='temp' ? (d[k]/100).toFixed(1)+u : k==='light' ? Math.round(1.09e-12*Math.pow(d[k],5.3))+' lux' : d[k]!=null ? d[k]+u : '--';
   });
   // ponytail: fan/pump real state from 51
   ['motor','pump'].forEach(k => {
@@ -161,8 +161,10 @@ const updateSensors = () => fetch('/51mcu?cmd=sensors').then(r=>r.json()).then(d
   }
   const ch = window._chart;
   ch.data.datasets[0].data.shift(); ch.data.datasets[0].data.push(d.temp / 100);
-  ch.data.datasets[1].data.shift(); ch.data.datasets[1].data.push(Math.round(d.light * 17));
+  ch.data.datasets[1].data.shift(); ch.data.datasets[1].data.push(Math.round(1.09e-12 * Math.pow(d.light, 5.3)));
   ch.update('none');
+  window._chartCnt = Math.min(MAX, (window._chartCnt || 0) + 1);
+  document.getElementById('chart-count').textContent = window._chartCnt;
 }).catch(()=>{});
 document.getElementById('refresh-sensors').onclick = updateSensors;
 let sensorTimer; const restartPoll = () => { clearInterval(sensorTimer); sensorTimer = setInterval(updateSensors, +document.getElementById('reflash-rate').value); };

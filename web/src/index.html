@@ -73,7 +73,8 @@
           <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">距离</span><span id="v-dist" class="text-neutral-200 text-lg">--cm</span></div>
           <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">红外</span><span id="v-ir" class="text-neutral-200 text-lg">--</span></div>
         </div>
-        <div style="height:120px"><canvas id="chart" class="w-full"></canvas></div>
+        <div style="height:120px;max-width:100%;overflow:hidden"><canvas id="chart" class="w-full"></canvas></div>
+        <div class="text-right text-xs text-neutral-600 mt-1"><span id="chart-count">0</span> 点</div>
       </div>
        <!-- stream controls -->
       <div class="flex gap-2 mt-3">

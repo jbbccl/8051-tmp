@@ -51,12 +51,6 @@
         <label class="text-sm text-neutral-400">饱和度 <span id="saturation-val" class="text-accent">0</span></label>
         <input type="range" id="saturation" min="-2" max="2" value="0" class="w-full">
       </div>
-
-      <div class="space-y-1">
-        <label class="text-sm text-neutral-400">LED <span id="led_intensity-val" class="text-accent">0</span></label>
-        <input type="range" id="led_intensity" min="0" max="255" value="0" class="w-full">
-      </div>
-
       <!-- toggle buttons: 2 per row -->
       <div class="grid grid-cols-2 gap-2 mt-3" id="toggles"></div>
     </div>
@@ -90,6 +84,10 @@
           <button id="close-stream" class="flex-1 text-sm px-3 py-1">关闭</button>
         </div>
         <img id="stream" src="" class="w-full" crossorigin>
+        <div class="space-y-1">
+          <label class="text-sm text-neutral-400">LED <span id="led_intensity-val" class="text-accent">0</span></label>
+          <input type="range" id="led_intensity" min="0" max="255" value="0" class="w-full">
+        </div>
       </div>
     </div>
 
@@ -98,20 +96,20 @@
       <div class="space-y-1">
         <label class="text-sm text-neutral-400">风机阈值 <span id="fan-val" class="text-accent">30°C</span></label>
         <input type="range" id="fan" min="20" max="40" value="30" class="w-full">
+        <div class="grid grid-cols-4 gap-2 text-sm mt-3">
+          <button id="fan-onoff" class="toggle-btn toggle-off text-sm px-3 py-1">风机 OFF</button>
+          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">风机状态</span><span id="v-motor" class="text-neutral-200">--</span></div>
+          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">风机阈值</span><span id="v-motor-lim" class="text-neutral-200">--</span></div>
+        </div>
       </div>
       <div class="space-y-1 mt-3">
         <label class="text-sm text-neutral-400">水泵阈值 <span id="pump-val" class="text-accent">0</span></label>
         <input type="range" id="pump" min="0" max="100" value="0" class="w-full">
-      </div>
-      <div class="flex justify-end mt-3 gap-2">
-        <button id="fan-onoff" class="toggle-btn toggle-off text-sm px-3 py-1">风机 OFF</button>
-        <button id="pump-onoff" class="toggle-btn toggle-off text-sm px-3 py-1">水泵 OFF</button>
-      </div>
-      <div class="grid grid-cols-2 gap-2 text-sm mt-3">
-        <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">风机状态</span><span id="v-motor" class="text-neutral-200">--</span></div>
-        <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">风机阈值</span><span id="v-motor-lim" class="text-neutral-200">--</span></div>
-        <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">水泵状态</span><span id="v-pump" class="text-neutral-200">--</span></div>
-        <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">水泵阈值</span><span id="v-pump-lim" class="text-neutral-200">--</span></div>
+        <div class="grid grid-cols-4 gap-2 text-sm mt-3">
+          <button id="pump-onoff" class="toggle-btn toggle-off text-sm px-3 py-1">水泵 OFF</button>
+          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">水泵状态</span><span id="v-pump" class="text-neutral-200">--</span></div>
+          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">水泵阈值</span><span id="v-pump-lim" class="text-neutral-200">--</span></div>
+        </div>
       </div>
     </div>
     </div>

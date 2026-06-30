@@ -44,7 +44,16 @@ d=json.load(open(f));\
 [e.update({'command':' '.join(p[:1]+['-w']+p[1:])})for e in d if (p:=[x for x in e['command'].split()if x not in bad])];\
 json.dump(d,open(f,'w'),indent=2)"
 
-.PHONY: clean flash esp esp-upload esp-monitor esp-clean esp-db web web-build web-pack web-dev web-install web-all
+# ── quick ──────────────────────
+w: web-build web-pack
+e: web-build web-pack esp esp-upload
+5: flash
+
+
+# ── init ────────────────────────────────
+init: web-install esp-db
+	@mkdir -p 8051/build
+	@echo "init done. run: make"
 
 # ── Web UI (Vite) ──────────────────────
 web-install:
@@ -62,3 +71,5 @@ web-pack:
 web: web-build web-pack
 
 web-all: web-install web
+
+.PHONY: clean flash 51 51-clean esp esp-upload esp-monitor esp-clean esp-db web web-build web-pack web-dev web-install web-all init w e 5

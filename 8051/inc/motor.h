@@ -7,4 +7,6 @@ void motor_on(void);
 void motor_off(void);
 void motor_run(unsigned char duty);
 
+void pump_off(void);
+void pump_on(void);
 #endif

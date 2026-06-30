@@ -29,6 +29,8 @@ int main(void) {
     seg7_init();
     nrf_init_global(addr, CH, RATE);
     uint8_t ir = 0;
+    uint8_t motor_acc = 0x80, pump_acc = 0x80, upper_bound = 0x80 - 50, lower_bound = 0x80 + 50;
+
     while (1) {
         uint16_t temp  = ds18b20_tempure();
         uint16_t light = adc_read(0xA4);
@@ -72,21 +74,36 @@ int main(void) {
             delay_ms(1);
         }
 
-        uint32_t stat;
-        if (motor_enable && temp > motor_limit * 100) {
-            stat = 1100; // 开继电器
+        if ( motor_enable && temp > motor_limit * 100 && motor_acc < upper_bound) {
+            motor_acc++;
+        }else if(motor_acc > lower_bound){
+            motor_acc--;
         }
-        else stat = 7700;
 
-        if (pump_enable && temp > pump_limit * 100) {
-            stat+=1100000; // 开继电器
+        if (pump_enable && temp > pump_limit * 100 && pump_acc < upper_bound) {
+            pump_acc++;
+        }else if(pump_acc > lower_bound){
+            pump_acc--;
         }
-        else stat+=7700000;
-        seg7_num(stat);
+
+        if(pump_acc == upper_bound){
+            pump_on();
+        }else if(pump_acc == lower_bound){
+            pump_off();
+        }
+        
+        if(motor_acc == upper_bound){
+            motor_on();
+        }else if (motor_acc == lower_bound) {
+            motor_off();
+        }
+        uint16_t stat = motor_acc;
+        stat<<=8;
+        stat|=pump_acc;
+        seg7_hex(stat);
     }
     /*
     TODO
-    继电器
     测距改引脚
     lcd?
     */

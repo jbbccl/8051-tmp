@@ -29,7 +29,9 @@ int main(void) {
     seg7_init();
     nrf_init_global(addr, CH, RATE);
     uint8_t ir = 0;
-    uint8_t motor_acc = 0x80, pump_acc = 0x80, upper_bound = 0x80 - 50, lower_bound = 0x80 + 50;
+    uint8_t mid = 0x80;
+    uint8_t motor_acc = mid, pump_acc = mid;
+    uint8_t upper_bound = mid + 2, lower_bound = mid - 2;
 
     while (1) {
         uint16_t temp  = ds18b20_tempure();
@@ -86,15 +88,15 @@ int main(void) {
             pump_acc--;
         }
 
-        if(pump_acc == upper_bound){
+        if(pump_acc > mid){
             pump_on();
-        }else if(pump_acc == lower_bound){
+        }else if(pump_acc < mid){
             pump_off();
         }
         
-        if(motor_acc == upper_bound){
+        if(motor_acc > mid){
             motor_on();
-        }else if (motor_acc == lower_bound) {
+        }else if (motor_acc < mid) {
             motor_off();
         }
         uint16_t stat = motor_acc;

@@ -13,3 +13,5 @@ dist
 __pycache__
 .pnpm-store
 esp32/inc/camera_index.h
+
+ppt

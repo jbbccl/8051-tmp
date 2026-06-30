@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>sensor-gate</title>
   <link rel="stylesheet" href="./style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 </head>
 <body class="bg-neutral-950 text-neutral-200 min-h-screen flex flex-col">
   <div class="toggle-on toggle-off hidden"></div>
@@ -60,18 +61,19 @@
       <!-- sensor preview -->
       <div>
         <div class="flex justify-end mb-2 items-center">
-          <button id="refresh-sensors" class="mt-1 text-sm px-3 py-1">刷新</button> <span id="v-nrf" class="text-xs" style="margin-left:2rem"></span> 
+          <button id="refresh-sensors" class="mt-1 text-sm px-3 py-1">刷新</button> <span id="v-nrf" class="text-xs" style="margin-left:1rem;margin-right:1rem"></span> 
           <div class="space-y-1">
             <label class="text-sm text-neutral-400">刷新速率 <span id="reflash-val" class="text-accent">2000ms</span></label>
             <input type="range" id="reflash-rate" min="100" max="5000" value="2000" class="w-full">
           </div>
         </div>
         <div class="grid grid-cols-2 gap-2 text-sm mt-2">
-          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">温度</span><span id="v-temp" class="text-neutral-200">--°C</span></div>
-          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">光强</span><span id="v-light" class="text-neutral-200">--</span></div>
-          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">距离</span><span id="v-dist" class="text-neutral-200">--cm</span></div>
-          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">红外</span><span id="v-ir" class="text-neutral-200">--</span></div>
+          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">温度</span><span id="v-temp" class="text-neutral-200 text-lg">--°C</span></div>
+          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">光强</span><span id="v-light" class="text-neutral-200 text-lg">--</span></div>
+          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">距离</span><span id="v-dist" class="text-neutral-200 text-lg">--cm</span></div>
+          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">红外</span><span id="v-ir" class="text-neutral-200 text-lg">--</span></div>
         </div>
+        <div style="height:120px"><canvas id="chart" class="w-full"></canvas></div>
       </div>
        <!-- stream controls -->
       <div class="flex gap-2 mt-3">
@@ -98,8 +100,6 @@
         <input type="range" id="fan" min="20" max="40" value="30" class="w-full">
         <div class="grid grid-cols-4 gap-2 text-sm mt-3">
           <button id="fan-onoff" class="toggle-btn toggle-off text-sm px-3 py-1">风机 OFF</button>
-          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">风机状态</span><span id="v-motor" class="text-neutral-200">--</span></div>
-          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">风机阈值</span><span id="v-motor-lim" class="text-neutral-200">--</span></div>
         </div>
       </div>
       <div class="space-y-1 mt-3">
@@ -107,9 +107,14 @@
         <input type="range" id="pump" min="0" max="100" value="0" class="w-full">
         <div class="grid grid-cols-4 gap-2 text-sm mt-3">
           <button id="pump-onoff" class="toggle-btn toggle-off text-sm px-3 py-1">水泵 OFF</button>
-          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">水泵状态</span><span id="v-pump" class="text-neutral-200">--</span></div>
-          <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">水泵阈值</span><span id="v-pump-lim" class="text-neutral-200">--</span></div>
         </div>
+      </div>
+      <p>远程同步状态: </p>
+      <div class="grid grid-cols-4 gap-2 text-sm mt-3">
+        <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">风机状态</span><span id="v-motor" class="text-neutral-200">--</span></div>
+        <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">风机阈值</span><span id="v-motor-lim" class="text-neutral-200">--</span></div>
+        <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">水泵状态</span><span id="v-pump" class="text-neutral-200">--</span></div>
+        <div class="bg-neutral-800 p-2 flex flex-col justify-center" style="aspect-ratio:5/3"><span class="text-neutral-400 text-xs">水泵阈值</span><span id="v-pump-lim" class="text-neutral-200">--</span></div>
       </div>
     </div>
     </div>

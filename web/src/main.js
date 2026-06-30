@@ -129,8 +129,8 @@ const updateSensors = () => fetch('/51mcu?cmd=sensors').then(r=>r.json()).then(d
   ['temp','light','dist','ir','nrf'].forEach(k => {
     const el = document.getElementById('v-' + k);
     if (!el) return;
-    const u = {temp:'°C', dist:'cm', light:'', ir:'', nrf:''}[k];
-    el.textContent = k==='nrf' ? (d[k] ? 'NRF✓' : 'NRF✗') : k==='temp' ? (d[k]/100).toFixed(1)+u : d[k]!=null ? d[k]+u : '--';
+    const u = {temp:'°C', dist:'cm', light:'%', ir:'', nrf:''}[k];
+    el.textContent = k==='nrf' ? (d[k] ? 'NRF✓' : 'NRF✗') : k==='temp' ? (d[k]/100).toFixed(1)+u : k==='light' ? Math.round(d[k]*17)+' lux' : d[k]!=null ? d[k]+u : '--';
   });
   // ponytail: fan/pump real state from 51
   ['motor','pump'].forEach(k => {
@@ -141,6 +141,28 @@ const updateSensors = () => fetch('/51mcu?cmd=sensors').then(r=>r.json()).then(d
   document.getElementById('v-pump-lim').textContent = (d.pump_lim || 0) + '%';
   document.getElementById('fan-onoff').textContent = '风机 ' + (d.motor ? 'ON' : 'OFF');
   document.getElementById('pump-onoff').textContent = '水泵 ' + (d.pump ? 'ON' : 'OFF');
+  // ponytail: Chart.js ring buffer for temp & light
+  const MAX = 20;
+  if (!window._chart) {
+    const ctx = document.getElementById('chart').getContext('2d');
+    window._chart = new Chart(ctx, {
+      type: 'line', data: { labels: Array(MAX).fill(''), datasets: [
+        { label: '温度 °C', data: Array(MAX).fill(0), borderColor: '#f5a97f', backgroundColor: 'rgba(245,169,127,0.1)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 },
+        { label: '光照 lux', data: Array(MAX).fill(0), yAxisID: 'y1', borderColor: '#c6a0f6', backgroundColor: 'rgba(198,160,246,0.1)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 }
+      ]},
+      options: { responsive: true, maintainAspectRatio: false,
+        scales: { x: { display: false },
+          y:  { beginAtZero: true, position: 'left',  ticks: { color: '#939ab7' }, grid: { color: 'rgba(147,154,183,0.15)' } },
+          y1: { beginAtZero: true, position: 'right', ticks: { color: '#939ab7' }, grid: { display: false } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+  const ch = window._chart;
+  ch.data.datasets[0].data.shift(); ch.data.datasets[0].data.push(d.temp / 100);
+  ch.data.datasets[1].data.shift(); ch.data.datasets[1].data.push(Math.round(d.light * 17));
+  ch.update('none');
 }).catch(()=>{});
 document.getElementById('refresh-sensors').onclick = updateSensors;
 let sensorTimer; const restartPoll = () => { clearInterval(sensorTimer); sensorTimer = setInterval(updateSensors, +document.getElementById('reflash-rate').value); };
